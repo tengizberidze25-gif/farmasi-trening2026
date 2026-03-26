@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmasi Registration</title>
+
+<style>
+* { box-sizing: border-box; }
+
+:root {
+  --bg1: #fff4f6;
+  --bg2: #ffe8ed;
+  --primary-dark: #e84d63;
+  --primary-light: #ff8090;
+  --text: #2f2f38;
+  --muted: #70707a;
+  --border: rgba(232, 77, 99, 0.18);
+  --shadow: 0 24px 55px rgba(36, 19, 26, 0.16);
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.75), transparent 30%),
+    linear-gradient(135deg, var(--bg1), var(--bg2));
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* ფონის კუპიურები */
+.money-rain {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.note {
+  position: absolute;
+  top: -240px;
+  width: 120px;
+  opacity: 0.42;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,0.10));
+}
+
+.note.n1  { left: 2%;  animation: fall1 12s linear infinite 0s; }
+.note.n2  { left: 7%;  animation: fall2 10s linear infinite 1s; }
+.note.n3  { left: 13%; animation: fall3 14s linear infinite 2s; }
+.note.n4  { left: 19%; animation: fall4 11s linear infinite .5s; }
+.note.n5  { left: 25%; animation: fall5 13s linear infinite 1.5s; }
+.note.n6  { left: 31%; animation: fall6 9.5s linear infinite 2.5s; }
+.note.n7  { left: 37%; animation: fall7 12.5s linear infinite .8s; }
+.note.n8  { left: 43%; animation: fall2 9.5s linear infinite 0.4s; }
+.note.n9  { left: 49%; animation: fall5 13.5s linear infinite 1.8s; }
+.note.n10 { left: 55%; animation: fall1 11.5s linear infinite 0.9s; }
+.note.n11 { left: 61%; animation: fall6 14.5s linear infinite 2.1s; }
+.note.n12 { left: 67%; animation: fall3 10.8s linear infinite 0.6s; }
+.note.n13 { left: 73%; animation: fall4 12.8s linear infinite 1.3s; }
+.note.n14 { left: 79%; animation: fall7 9.8s linear infinite 2.4s; }
+.note.n15 { left: 85%; animation: fall1 15s linear infinite 3s; }
+.note.n16 { left: 91%; animation: fall2 12.2s linear infinite 2.7s; }
+.note.n17 { left: 11%; animation: fall5 11.3s linear infinite 3.2s; }
+.note.n18 { left: 63%; animation: fall6 13.8s linear infinite 1.7s; }
+.note.n19 { left: 23%; animation: fall3 11.8s linear infinite 2.2s; }
+.note.n20 { left: 75%; animation: fall4 10.6s linear infinite .9s; }
+
+@keyframes fall1 {
+  0% { transform: translate(-15px,-240px) rotate(0deg); opacity: 0; }
+  15% { opacity: .42; }
+  35% { transform: translate(34px,30vh) rotate(12deg); }
+  65% { transform: translate(-14px,65vh) rotate(-8deg); }
+  100% { transform: translate(18px,120vh) rotate(22deg); opacity: 0; }
+}
+@keyframes fall2 {
+  0% { transform: translate(10px,-240px) rotate(0deg); opacity: 0; }
+  20% { opacity: .42; }
+  55% { transform: translate(-28px,60vh) rotate(-10deg); }
+  100% { transform: translate(24px,120vh) rotate(16deg); opacity: 0; }
+}
+@keyframes fall3 {
+  0% { transform: translate(-8px,-240px) rotate(0deg); opacity: 0; }
+  18% { opacity: .42; }
+  40% { transform: translate(28px,38vh) rotate(14deg); }
+  75% { transform: translate(-24px,90vh) rotate(-12deg); }
+  100% { transform: translate(14px,120vh) rotate(18deg); opacity: 0; }
+}
+@keyframes fall4 {
+  0% { transform: translate(0,-240px) rotate(0deg); opacity: 0; }
+  12% { opacity: .42; }
+  50% { transform: translate(-32px,58vh) rotate(-14deg); }
+  100% { transform: translate(22px,120vh) rotate(20deg); opacity: 0; }
+}
+@keyframes fall5 {
+  0% { transform: translate(12px,-240px) rotate(0deg); opacity: 0; }
+  15% { opacity: .42; }
+  42% { transform: translate(-20px,44vh) rotate(-9deg); }
+  100% { transform: translate(28px,120vh) rotate(15deg); opacity: 0; }
+}
+@keyframes fall6 {
+  0% { transform: translate(-18px,-240px) rotate(0deg); opacity: 0; }
+  15% { opacity: .42; }
+  60% { transform: translate(26px,68vh) rotate(12deg); }
+  100% { transform: translate(-14px,120vh) rotate(-18deg); opacity: 0; }
+}
+@keyframes fall7 {
+  0% { transform: translate(8px,-240px) rotate(0deg); opacity: 0; }
+  12% { opacity: .42; }
+  48% { transform: translate(-22px,50vh) rotate(-10deg); }
+  100% { transform: translate(20px,120vh) rotate(18deg); opacity: 0; }
+}
+
+/* გვერდის კონტეინერი */
+.page-wrap {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 26px 18px 32px;
+  position: relative;
+  z-index: 3;
+}
+
+.card {
+  width: 100%;
+  max-width: 430px;
+  background: rgba(255,255,255,0.82);
+  border-radius: 30px;
+  padding: 28px 24px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.48);
+}
+
+.logo-wrap {
+  position: relative;
+  width: 230px;
+  height: 100px;
+  margin: 0 auto 12px;
+}
+
+.logo {
+  width: 175px;
+  position: absolute;
+  left: 18px;
+  top: 2px;
+  animation: logoMove 4.8s ease-in-out infinite;
+}
+
+@keyframes logoMove {
+  0%   { transform: translateX(0px) rotate(0deg) scale(1); }
+  25%  { transform: translateX(12px) rotate(4deg) scale(1.01); }
+  50%  { transform: translateX(24px) rotate(0deg) scale(1.03); }
+  75%  { transform: translateX(12px) rotate(-4deg) scale(1.01); }
+  100% { transform: translateX(0px) rotate(0deg) scale(1); }
+}
+
+h2 {
+  margin: 6px 0 10px;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  background: rgba(255,255,255,0.30);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 8px 10px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.stat-num {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.event {
+  background: rgba(255,255,255,0.34);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 15px 16px;
+  text-align: left;
+  margin-bottom: 18px;
+  font-size: 14px;
+  line-height: 1.75;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.event b {
+  color: var(--primary-dark);
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.event-line {
+  color: #3f3f49;
+}
+
+input {
+  width: 100%;
+  padding: 15px 14px;
+  margin: 8px 0;
+  border-radius: 16px;
+  border: 1px solid rgba(80, 80, 95, 0.12);
+  font-size: 16px;
+  background: rgba(255,255,255,0.78);
+  outline: none;
+  color: var(--text);
+}
+
+input::placeholder {
+  color: #9b9ba5;
+}
+
+input:focus {
+  border-color: rgba(232, 77, 99, 0.35);
+  box-shadow: 0 0 0 3px rgba(232, 77, 99, 0.08);
+}
+
+button {
+  width: 100%;
+  padding: 16px 16px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  box-shadow: 0 10px 22px rgba(232, 77, 99, 0.22);
+}
+
+button:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.msg {
+  margin-top: 14px;
+  display: none;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.success { color: #178c45; }
+.error { color: #d73d51; }
+
+#musicBtn {
+  position: fixed;
+  right: 16px;
+  bottom: 18px;
+  width: auto;
+  min-width: 122px;
+  padding: 13px 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+  z-index: 5;
+  font-size: 14px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(232, 77, 99, 0.24);
+}
+
+/* Tablet / mobile */
+@media (max-width: 768px) {
+  .note {
+    width: 108px;
+    opacity: 0.58;
+  }
+
+  .note.n1  { left: 1%; }
+  .note.n2  { left: 6%; }
+  .note.n3  { left: 12%; }
+  .note.n4  { left: 18%; }
+  .note.n5  { left: 24%; }
+  .note.n6  { left: 30%; }
+  .note.n7  { left: 36%; }
+  .note.n8  { left: 42%; }
+  .note.n9  { left: 48%; }
+  .note.n10 { left: 54%; }
+  .note.n11 { left: 60%; }
+  .note.n12 { left: 66%; }
+  .note.n13 { left: 72%; }
+  .note.n14 { left: 78%; }
+  .note.n15 { left: 84%; }
+  .note.n16 { left: 90%; }
+  .note.n17 { left: 14%; }
+  .note.n18 { left: 58%; }
+  .note.n19 { left: 26%; }
+  .note.n20 { left: 74%; }
+
+  .card {
+    max-width: 92vw;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrap {
+    padding: 18px 10px 34px;
+    align-items: flex-start;
+  }
+
+  .card {
+    padding: 22px 16px 20px;
+    max-width: 89vw;
+    border-radius: 26px;
+  }
+
+  .logo-wrap {
+    width: 205px;
+    height: 90px;
+  }
+
+  .logo {
+    width: 158px;
+    left: 16px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .note {
+    width: 98px;
+    opacity: 0.66;
+  }
+
+  #musicBtn {
+    right: 12px;
+    bottom: 16px;
+    min-width: 112px;
+    padding: 12px 14px;
+    border-radius: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="money-rain">
+  <img src="gel100.png" class="note n1" alt="">
+  <img src="usd100.png" class="note n2" alt="">
+  <img src="gel200.png" class="note n3" alt="">
+  <img src="gel100.png" class="note n4" alt="">
+  <img src="usd100.png" class="note n5" alt="">
+  <img src="gel200.png" class="note n6" alt="">
+  <img src="gel100.png" class="note n7" alt="">
+  <img src="usd100.png" class="note n8" alt="">
+  <img src="gel200.png" class="note n9" alt="">
+  <img src="gel100.png" class="note n10" alt="">
+  <img src="usd100.png" class="note n11" alt="">
+  <img src="gel200.png" class="note n12" alt="">
+  <img src="gel100.png" class="note n13" alt="">
+  <img src="usd100.png" class="note n14" alt="">
+  <img src="gel200.png" class="note n15" alt="">
+  <img src="gel100.png" class="note n16" alt="">
+  <img src="usd100.png" class="note n17" alt="">
+  <img src="gel200.png" class="note n18" alt="">
+  <img src="gel100.png" class="note n19" alt="">
+  <img src="usd100.png" class="note n20" alt="">
+</div>
+
+<div class="page-wrap">
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="farmasi.png" class="logo" alt="Farmasi Logo">
+    </div>
+
+    <h2>ტრენინგზე რეგისტრაცია</h2>
+    <div class="subtitle">შეავსე ფორმა და დაადასტურე მონაწილეობა</div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-label">სულ</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="todayCount">0</div>
+        <div class="stat-label">დღეს</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num" id="spotsLeft">-</div>
+        <div class="stat-label">დარჩა</div>
+      </div>
+    </div>
+
+    <div class="event">
+      <b>📍 ღონისძიების დეტალები</b>
+      <div id="eventCity" class="event-line">📍 ქალაქი: იტვირთება...</div>
+      <div id="eventDate" class="event-line">📅 თარიღი: ...</div>
+      <div id="eventTime" class="event-line">🕒 დრო: ...</div>
+      <div id="eventLocation" class="event-line">🏢 ლოკაცია: ...</div>
+    </div>
+
+    <form id="form">
+      <input name="first_name" placeholder="სახელი" required>
+      <input name="last_name" placeholder="გვარი" required>
+      <input name="phone" placeholder="ტელეფონი (599123456)" required>
+      <button id="btn" type="submit">დარეგისტრირება</button>
+    </form>
+
+    <div id="success" class="msg success"></div>
+    <div id="error" class="msg error"></div>
+  </div>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<button onclick="toggleMusic()" id="musicBtn">🔊 მუსიკა</button>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-6G51SG_QFEHROFvm1PD8rsV5lWQIBDEAAtjXBBauUJ3UlYUU9AYUpx5CNSZk_hhe/exec";
+
+let playing = false;
+const form = document.getElementById("form");
+const btn = document.getElementById("btn");
+const successBox = document.getElementById("success");
+const errorBox = document.getElementById("error");
+
+function toggleMusic() {
+  const music = document.getElementById("bgMusic");
+  const musicBtn = document.getElementById("musicBtn");
+
+  if (!playing) {
+    music.play();
+    musicBtn.innerText = "🔇 გამორთვა";
+    playing = true;
+  } else {
+    music.pause();
+    musicBtn.innerText = "🔊 მუსიკა";
+    playing = false;
+  }
+}
+
+async function loadEvent() {
+  try {
+    const res = await fetch(SCRIPT_URL + "?t=" + Date.now());
+    const data = await res.json();
+
+    document.getElementById("eventCity").innerText = "📍 ქალაქი: " + data.city;
+    document.getElementById("eventDate").innerText = "📅 თარიღი: " + data.date;
+    document.getElementById("eventTime").innerText = "🕒 დრო: " + data.time;
+    document.getElementById("eventLocation").innerText = "🏢 ლოკაცია: " + data.location;
+
+    document.getElementById("totalCount").innerText = data.totalRegistrations ?? 0;
+    document.getElementById("todayCount").innerText = data.todayRegistrations ?? 0;
+    document.getElementById("spotsLeft").innerText =
+      data.spotsLeft === null ? "∞" : data.spotsLeft;
+  } catch (e) {
+    document.getElementById("eventCity").innerText = "❌ მონაცემები ვერ ჩაიტვირთა";
+  }
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  successBox.style.display = "none";
+  errorBox.style.display = "none";
+
+  btn.disabled = true;
+  btn.innerText = "იგზავნება...";
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: new FormData(form)
+    });
+
+    const text = (await res.text()).trim();
+
+    if (text === "success") {
+      form.reset();
+      successBox.innerText = "რეგისტრაცია წარმატებულია ✅";
+      successBox.style.display = "block";
+      setTimeout(loadEvent, 800);
+    } else if (text === "duplicate") {
+      errorBox.innerText = "ეს ნომერი უკვე დარეგისტრირებულია ❌";
+      errorBox.style.display = "block";
+    } else if (text === "invalid") {
+      errorBox.innerText = "არასწორი ნომერი ❌";
+      errorBox.style.display = "block";
+    } else if (text === "closed") {
+      errorBox.innerText = "რეგისტრაცია დახურულია ❌";
+      errorBox.style.display = "block";
+    } else if (text === "full") {
+      errorBox.innerText = "ადგილები აღარ არის ❌";
+      errorBox.style.display = "block";
+    } else if (text === "sms error") {
+      errorBox.innerText = "SMS ვერ გაიგზავნა ❌";
+      errorBox.style.display = "block";
+    } else {
+      errorBox.innerText = "შეცდომა ❌";
+      errorBox.style.display = "block";
+    }
+  } catch (err) {
+    errorBox.innerText = "სერვერთან კავშირი ვერ მოხერხდა ❌";
+    errorBox.style.display = "block";
+  }
+
+  btn.disabled = false;
+  btn.innerText = "დარეგისტრირება";
+});
+
+loadEvent();
+setInterval(loadEvent, 5000);
+</script>
+
+</body>
+</html>
